@@ -1,0 +1,84 @@
+
+#include <Adafruit_NeoPixel.h>
+#ifdef __AVR__
+#include <avr/power.h>
+#endif
+
+#define PIN 6
+
+#define NUM_LEDS 30
+
+#define BRIGHTNESS 50
+
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800);
+
+int temp;
+int tempPin = A5;
+int tempColor;
+
+void setAdjustedColor(int red, int green, int blue) {
+  for (int i = 0; i < strip.numPixels(); i++)
+  {
+    strip.setPixelColor(i, strip.Color(red, green, blue));
+  }
+}
+
+
+
+void setup() {
+  Serial.begin(115200);
+
+  // initialize the temperature sensor pin
+  pinMode(tempPin, INPUT);
+
+
+  strip.setBrightness(BRIGHTNESS);
+  strip.begin();
+}
+
+
+void loop() {
+  // read the temperature sensor pin
+  temp = analogRead(tempPin);
+
+
+  tempColor = map(temp, 150, 175, 0, 360);
+
+  Serial.println(tempColor);
+
+
+  uint16_t i;
+
+  setColorHSB(tempColor, 255, 255);
+
+  strip.show();
+}
+
+void setColorHSB(int hue, unsigned int saturation, unsigned int value) {
+  long chroma = value * saturation / 255;
+  long secondary = chroma * (60 - abs((hue % 120) - 60)) / 60;
+  int offset = value - chroma;
+  byte r = 0, g = 0, b = 0;
+
+  if (hue < 60) { //red-orange
+    r = chroma;
+    g = secondary;
+  } else if (hue < 120) { //orange-yellow
+    r = secondary;
+    g = chroma;
+  } else if (hue < 180) { //yellow - green
+    g = chroma;
+    b = secondary;
+  } else if (hue < 240) { //green - blue
+    g = secondary;
+    b = chroma;
+  } else if (hue < 300) { //blue - purple
+    r = secondary;
+    b = chroma;
+  } else if (hue < 360) { //purple-red
+    r = chroma;
+    b = secondary;
+  }
+
+  setAdjustedColor(r + offset, g + offset, b + offset);
+}
