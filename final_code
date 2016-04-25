@@ -42,7 +42,7 @@ void loop() {
   temp = analogRead(tempPin);
 
 
-  tempColor = map(temp, 150, 175, 0, 360);
+  tempColor = map(temp, 150, 175, 0, 300);
 
   Serial.println(tempColor);
 
@@ -75,9 +75,6 @@ void setColorHSB(int hue, unsigned int saturation, unsigned int value) {
   } else if (hue < 300) { //blue - purple
     r = secondary;
     b = chroma;
-  } else if (hue < 360) { //purple-red
-    r = chroma;
-    b = secondary;
   }
 
   setAdjustedColor(r + offset, g + offset, b + offset);
