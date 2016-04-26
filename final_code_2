@@ -1,0 +1,76 @@
+
+#include <Adafruit_NeoPixel.h>
+#ifdef __AVR__
+#include <avr/power.h>
+#endif
+
+#define PIN 6
+
+#define NUM_LEDS 30
+
+#define BRIGHTNESS 50
+
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800);
+
+int temp;
+int tempPin = A5;
+int tempColor;
+//set temp sensor pin
+
+void setAdjustedColor(int red, int green, int blue) {
+  for (int i = 0; i < strip.numPixels(); i++)
+  {
+    strip.setPixelColor(i, strip.Color(red, green, blue));
+  }
+}
+
+
+
+void setup() {
+  Serial.begin(115200);
+
+  pinMode(tempPin, INPUT);
+
+
+  strip.setBrightness(BRIGHTNESS);
+  strip.begin();
+}
+
+
+void loop() {
+  temp = analogRead(tempPin);
+
+
+  tempColor = map(temp, 150, 175, 0, 250);
+
+  Serial.println(tempColor);
+
+
+  uint16_t i;
+
+
+ for (i = 0; i < strip.numPixels(); i++)
+ {
+
+      if (-25 < tempColor && tempColor < 56) {
+        strip.setPixelColor(i, strip.Color(round(255), round(0), round(0))); // Red
+      }
+      else if (56 < tempColor && tempColor < 137) {
+        strip.setPixelColor(i, strip.Color(round(255), round(255), round(0))); // yellow
+      }
+      else if (138 < tempColor && tempColor < 210) {
+        strip.setPixelColor(i, strip.Color(round(0), round(255), round(0))); // Green
+  
+      }
+      else if (211 < tempColor && tempColor < 250) {
+        strip.setPixelColor(i, strip.Color(round(0), round(0), round(255))); // Blue
+  
+      }
+
+      else {
+        strip.setPixelColor(i, strip.Color(round(255), round(255), round(255))); // White
+      }
+  
+    }
+  strip.show();
+}
