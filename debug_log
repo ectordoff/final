@@ -1,0 +1,94 @@
+// first attempts unsuccessful, regardless of code. Found out with your help that the strip was actually wired backwards, and the current wasn't able to run through the strand at all. 
+//soldered wires on the right end, and started again.
+
+// hacking code from insturctables downloads for infinity lights such as
+// void loop(void) {
+// float temperature = getTemp();
+// Serial.println(temperature);
+// delay(100);
+// couldn't get strip to light up, couldn't install library for the code provided
+
+// downloaded adafruit library, took pieces of instructables code and adafruit test codes to add temperature control  
+// temp = analogRead(tempPin);
+// Serial.println(tempPin);
+// and (adafruit)
+// void loop() {
+//  colorWipe(strip.Color(255, 0, 0), 50); // Red
+//  colorWipe(strip.Color(0, 255, 0), 50); // Green
+//  colorWipe(strip.Color(0, 0, 255), 50); // Blue
+//  colorWipe(strip.Color(0, 0, 0, 255), 50); // White
+// got strip to light up
+
+// since adafruit sells strands that are 60 LED’s per meter and 30 LED’s per meter, test code was all set to 60
+// #define NUM_LEDS 60
+// worked with my light strip, but the transitions between lighting colors was smoother when changed to the proper 30. I think this difference would have been seen more in the 60 strip, set at 30, and not so much in the other direction, but I did notice a small difference in speed between lights illuminating. 
+
+
+// added temp sensor, temperature sensor kept over heating as soon as code uploaded
+// int temp;
+// int tempPin = A5;
+// int tempColor;
+// void setAdjustedColor(int red, int green, int blue) {
+// for (int i = 0; i < strip.numPixels(); i++)
+//  {
+//    strip.setPixelColor(i, strip.Color(red, green, blue));
+//   }
+// }
+
+// sensor started to melt breadboard, wouldn't read temperature, kept reading “19”
+// int temp;
+// int tempPin = A5;
+// int tempColor;
+//  temp = analogRead(tempPin);
+//  Serial.println(tempColor);
+
+
+// all diagrams online for temperature control were wrong, switched power and ground and it stopped over heating
+// worked with same code, just had to switch (found forum online talking about it)
+
+// with the help of Leah, trying to set temperature for different colors didn't work at first, wrong syntax
+// if (0 < tempColor < 25) {
+//    colorWipe(strip.Color(255,0,0),50); // Red
+//  }
+//  if (25 < tempColor < 50) {
+//    colorWipe(strip.Color(0,255,0), 50); // Green
+//  }
+//  if (50 < tempColor < 75) {
+//    colorWipe(strip.Color(0,0,255),50); // Blue
+//  }
+//  if (75 < tempColor < 100) {
+//    colorWipe(strip.Color(255,255,255),50); // White
+//  }
+
+// needed to be “&&” (found out talking to you!)
+//  for (i = 0; i < strip.numPixels(); i++)
+// {
+//
+//      if (-25 < tempColor && tempColor < 56) {
+//        strip.setPixelColor(i, strip.Color(round(255), round(0), round(0))); // Red
+//      }
+//      else if (56 < tempColor && tempColor < 137) {
+//        strip.setPixelColor(i, strip.Color(round(255), round(120), round(0))); // yellow
+//      }
+//      else if (138 < tempColor && tempColor < 210) {
+//        strip.setPixelColor(i, strip.Color(round(0), round(255), round(0))); // Green
+//  
+//      }
+//      else if (211 < tempColor && tempColor < 320) {
+//        strip.setPixelColor(i, strip.Color(round(0), round(0), round(255))); // Blue
+//  
+//      }
+//
+//      else {
+//        strip.setPixelColor(i, strip.Color(round(255), round(255), round(255))); // White
+//      }
+//  
+//    }
+
+// had to play around with setting map values to be closer the values being printed 
+// played around with thresholds to be more realistic with ambient temperatures
+// tried   strip.show(); in multiple places, changed when the strip changed colors. had to be within the for loop but outside each if statement
+
+// with help of you, found code for setting HSB color, to fade between colors instead of switching at threshold
+// again, had to change map values and hue values 
+// deleted the last line, fading from purple to red, to create a distinct visual difference between high temperature and low temperature
